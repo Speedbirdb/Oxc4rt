@@ -1,1 +1,22 @@
-<p>signin works!</p>
+<div class="form-outline">
+    <p style="font-size: larger;">Sign in</p>
+    
+    <form>
+        <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="input-field" [(ngModel)]="email">
+        </div>
+
+        <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="input-field" [(ngModel)]="password">
+        </div>
+
+    </form>
+
+    <button class="standart-button" [disabled]="!isFormValid()" (click)="onSubmit()" a routerLink>Sign in</button>
+    
+    <span style="font-size: 13px;">Don't have an account ? 
+        <a routerLink="/signup" style="color: navy; cursor: pointer; text-decoration: underline;">Sign up</a>
+    </span>
+</div>
