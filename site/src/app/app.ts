@@ -9,4 +9,13 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected title = 'site';
+
+  onSignin() {
+    console.log('Signin attempted')
+    //remaining logic for implementation
+  }
+  onSignUp() {
+    console.log('Signup attempted')
+    // remaining logic
+  }
 }
