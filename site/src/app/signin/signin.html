@@ -12,6 +12,8 @@
         <input type="password" id="password" name="password" class="input-field" [(ngModel)]="password">
         </div>
 
+        <span a routerLink="/forgottenpassword" style="font-size: 13px; color: navy; cursor: pointer; text-decoration: underline;">Forgotten Password?</span>
+
     </form>
 
     <button class="standart-button" [disabled]="!isFormValid()" (click)="onSubmit()" a routerLink>Sign in</button>

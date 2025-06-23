@@ -22,6 +22,7 @@ export class Signin {
   onSubmit(): void {
     if (this.isFormValid()){}
   }
+  
   isValidEmail(): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(this.email);
