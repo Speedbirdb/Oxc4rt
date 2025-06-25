@@ -1,16 +1,17 @@
 import { Controller, Post, Body } from '@nestjs/common';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-    constructor() {}
+    constructor(private authService: AuthService) {}
 
     @Post('signup')
     async signup(@Body() body: { email: string; password: string }) {
-        return { message: 'Signup endpoint ready' };
+        return this.authService.signup(body.email, body.password);
     }
 
     @Post('verify')
     async verify(@Body() body: { email: string; code: string }) {
-        return { message: 'Verify endpoint ready' };
+        return this.authService.verifyCode(body.email, body.code);
     }
 }

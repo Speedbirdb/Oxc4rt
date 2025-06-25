@@ -9,7 +9,7 @@ import { UserService } from './user.service';
             { name: 'User', schema : UserSchema}
         ]),
     ],
-    providers: [UserService]
+    providers: [UserService],
+    exports: [UserService]
 })
 export class UserModule {}
-// test
