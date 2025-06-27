@@ -14,4 +14,9 @@ export class AuthController {
     async verify(@Body() body: { email: string; code: string }) {
         return this.authService.verifyCode(body.email, body.code);
     }
+
+    @Post('signin')
+    async signin(@Body() body: { email: string; password: string }) {
+        return this.authService.signin(body.email, body.password);
+    }
 }

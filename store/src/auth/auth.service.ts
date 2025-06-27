@@ -20,23 +20,26 @@ export class AuthService {
         return { message: 'User created successfully', email };
     }
 
-    async signin(email: string, password: string){
+    async signin(email: string, password: string) {
         const user = await this.userService.findByEmail(email);
         if (!user) {
             throw new Error('User not found');
         }
 
-        if (!user.isVerified){
+        if (!user.isVerified) {
             throw new Error('Please verify your email first');
         }
 
-        // password comparison logic later on
+        // Password comparison logic will be added with bcrypt
         return { message: 'Signin successful', email };
     }
 
     async verifyCode(email: string, code: string) {
         const user = await this.userService.findByEmail(email);
-        if (!user || user.verificationCode !== code) {
+        if (!user) {
+            throw new Error('User not found');
+        }
+        if (user.verificationCode !== code) {
             throw new Error('Invalid verification code');
         }
 
