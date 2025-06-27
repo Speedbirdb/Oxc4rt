@@ -12,11 +12,11 @@ export class UserService {
         return user.save();
     }
 
-    async findByEmail(email: string): Promise<User> {
+    async findByEmail(email: string): Promise<User | null> {
         return this.userModel.findOne({ email }).exec();
     }
 
-    async updateVerificationCode(email: string, code: string): Promise<User> {
+    async updateVerificationCode(email: string, code: string): Promise<User | null> {
         return this.userModel.findOneAndUpdate(
             { email },
             { verificationCode: code },

@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
+import { EmailService } from '../emailserv/email.service';
 
 @Injectable()
 export class AuthService {
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService, private emailService: EmailService) {}
 
     async signup(email: string, password: string) {
         const existingUser = await this.userService.findByEmail(email);
@@ -12,10 +13,25 @@ export class AuthService {
         }
 
         const user = await this.userService.create(email, password);
-        const verificationCode = this.generateCode();
+        const verificationCode = this.emailService.generateVerificationCode();
+        await this.emailService.sendVerificationEmail(email, verificationCode);
         await this.userService.updateVerificationCode(email, verificationCode);
 
         return { message: 'User created successfully', email };
+    }
+
+    async signin(email: string, password: string){
+        const user = await this.userService.findByEmail(email);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        if (!user.isVerified){
+            throw new Error('Please verify your email first');
+        }
+
+        // password comparison logic later on
+        return { message: 'Signin successful', email };
     }
 
     async verifyCode(email: string, code: string) {
@@ -26,8 +42,5 @@ export class AuthService {
 
         return { message: 'Email verified successfully' };
     }
-
-    private generateCode(): string {
-        return Math.random().toString(36).substring(2, 8).toUpperCase();
-    }
+    
 }
