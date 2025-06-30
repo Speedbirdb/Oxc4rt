@@ -23,4 +23,12 @@ export class UserService {
             { new: true }
         ).exec();
     }
+
+    async markAsVerified(email: string): Promise<User | null> {
+        return this.userModel.findOneAndUpdate(
+            { email },
+            { isVerified: true, verificationCode: null },
+            { new: true }
+        ).exec();
+    }
 }

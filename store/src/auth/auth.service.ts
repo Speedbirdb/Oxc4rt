@@ -17,7 +17,7 @@ export class AuthService {
         await this.emailService.sendVerificationEmail(email, verificationCode);
         await this.userService.updateVerificationCode(email, verificationCode);
 
-        return { message: 'User created successfully', email };
+        return { message: 'User created successfully', email, verificationCode };
     }
 
     async signin(email: string, password: string) {
@@ -43,6 +43,8 @@ export class AuthService {
             throw new Error('Invalid verification code');
         }
 
+        // Mark user as verified
+        await this.userService.markAsVerified(email);
         return { message: 'Email verified successfully' };
     }
     

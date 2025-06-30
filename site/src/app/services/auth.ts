@@ -7,9 +7,19 @@ import { Observable } from 'rxjs';
 })
 export class Auth {
 
+  private apiUrl = 'http://localhost:3000/auth';
+
   constructor(private http: HttpClient) { }
 
-  // signUp(email: string, password: string): Observable<any> { }
-  // verifyCode(email: string, code: string): Observable<any> { }
-  // resendCode(email: string): Observable<any> { }
+  signUp(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/signup`, { email, password });
+  }
+
+  verifyCode(email: string, code: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/verify`, { email, code });
+  }
+
+  signIn(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/signin`, { email, password });
+  }
 }

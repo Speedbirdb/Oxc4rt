@@ -19,7 +19,13 @@
 
     </form>
 
-    <button class="standart-button" [disabled]="!isFormValid()" (click)="onSubmit()">Sign up</button>
+    <button class="standart-button" [disabled]="!isFormValid() || isLoading" (click)="onSubmit()">
+        {{isLoading ? 'Creating Account...' : 'Sign up'}}
+    </button>
+
+    <div *ngIf="message" style="margin: 10px 0; padding: 10px; border-radius: 5px; background-color: #f0f0f0;">
+        {{message}}
+    </div>
 
     <span style="font-size: 13px;">Already have an account ? 
         <a routerLink="/signin" style="color: navy; cursor: pointer; text-decoration: underline;">Sign in</a>

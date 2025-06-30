@@ -1,6 +1,7 @@
-import { Component, input } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { Auth } from '../services/auth';
 
 @Component({
   selector: 'app-signup',
@@ -30,9 +31,32 @@ export class Signup {
            this.isValidEmail();
   }
 
+  message: string = '';
+  isLoading: boolean = false;
+
+  constructor(private authService: Auth, private router: Router) {}
+
   onSubmit(): void {
-    if (this.isFormValid()){
-      
+    if (this.isFormValid()) {
+      this.isLoading = true;
+      this.authService.signUp(this.email, this.password).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.error) {
+            this.message = response.error;
+          } else {
+            this.message = 'Verification email sent! Check your email.';
+            // Navigate to verification page after 2 seconds
+            setTimeout(() => {
+              this.router.navigate(['/verify-email', 'token']);
+            }, 2000);
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.message = 'Signup failed. Please try again.';
+        }
+      });
     }
   }
 }
