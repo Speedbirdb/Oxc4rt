@@ -39,6 +39,8 @@ export class Signup {
   onSubmit(): void {
     if (this.isFormValid()) {
       this.isLoading = true;
+      localStorage.setItem('signupEmail', this.email);
+      localStorage.setItem('signupPassword', this.password);
       this.authService.signUp(this.email, this.password).subscribe({
         next: (response) => {
           this.isLoading = false;
