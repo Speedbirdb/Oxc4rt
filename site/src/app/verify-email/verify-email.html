@@ -1,1 +1,33 @@
-<p>verify-email works!</p>
+<div class="form-outline">
+    <p style="font-size: larger;">Enter Verification Code</p>
+    
+    <p style="font-size: 14px; color: #666;">
+        Code sent to: <strong>{{email}}</strong><br>
+        Check the nestjs terminal
+    </p>
+
+    <form>
+        <div class="input-group">
+            <label for="verificationCode">Verification Code</label>
+            <input 
+                type="text" 
+                id="verificationCode" 
+                name="verificationCode" 
+                class="input-field" 
+                [(ngModel)]="verificationCode"
+                placeholder="Enter 6-digit code"
+                maxlength="6">
+        </div>
+    </form>
+
+    <button 
+        class="standart-button" 
+        [disabled]="!verificationCode || isLoading" 
+        (click)="onVerify()">
+        {{isLoading ? 'Verifying...' : 'Verify Email'}}
+    </button>
+
+    <div *ngIf="!email" style="color: red; margin-top: 10px;">
+        No email found. <a routerLink="/signup">Please sign up first</a>
+    </div>
+</div>

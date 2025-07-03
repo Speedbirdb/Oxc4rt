@@ -18,7 +18,6 @@ export class VerifyEmail implements OnInit{
   constructor(private authService: Auth, private route: ActivatedRoute, private router: Router){}
 
   ngOnInit(): void {
-    // Get email from localStorage (stored during signup)
     this.email = localStorage.getItem('signupEmail') || '';
     
     if (!this.email) {
@@ -26,53 +25,42 @@ export class VerifyEmail implements OnInit{
     }
   }
   onVerify(): void {
-    if (!this.email || !this.verificationCode) {
-      this.message = 'Please enter verification code';
-      return;
-    }
+    if (!this.verificationCode) return;
 
     this.isLoading = true;
-    this.message = '';
-
+    
     this.authService.verifyCode(this.email, this.verificationCode).subscribe({
       next: (response) => {
-        this.isLoading = false;
         if (response.error) {
-          this.message = response.error;
+          this.isLoading = false;
+          // Just reset - user can try again
         } else {
-          this.message = 'Email verified! Signing you in...';
-          // Auto-signin after verification
+          // Success - auto signin and navigate
           this.autoSignin();
         }
       },
       error: (error) => {
         this.isLoading = false;
-        this.message = 'Verification failed. Please try again.';
+        // Just reset - user can try again
       }
     });
   }
+
 
   private autoSignin(): void {
     const password = localStorage.getItem('signupPassword');
     if (password) {
       this.authService.signIn(this.email, password).subscribe({
         next: (response) => {
-          if (response.error) {
-            this.message = 'Verification successful. Please sign in manually.';
-            setTimeout(() => this.router.navigate(['/signin']), 2000);
-          } else {
-            this.message = 'Welcome! Redirecting to scheduler...';
-            setTimeout(() => this.router.navigate(['/scheduler']), 2000);
-          }
+          this.router.navigate(['/scheduler']);
         },
         error: (error) => {
-          this.message = 'Verification successful. Please sign in manually.';
-          setTimeout(() => this.router.navigate(['/signin']), 2000);
+          this.router.navigate(['/signin']);
         }
       });
     } else {
-      this.message = 'Verification successful. Please sign in.';
-      setTimeout(() => this.router.navigate(['/signin']), 2000);
+      this.router.navigate(['/signin']);
     }
   }
+
 }
