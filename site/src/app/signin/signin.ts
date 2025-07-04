@@ -13,7 +13,6 @@ export class Signin {
 
   email: string = '';
   password: string = '';
-  message: string = '';
   isLoading: boolean = false;
 
   constructor(private authService: Auth, private router: Router) {}
@@ -25,7 +24,21 @@ export class Signin {
   }
 
   onSubmit(): void {
-    if (this.isFormValid()){}
+    if (this.isFormValid()) {
+      this.isLoading = true;
+      
+      this.authService.signIn(this.email, this.password).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (!response.error) {
+            this.router.navigate(['/scheduler']);
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+        }
+      });
+    }
   }
   
   isValidEmail(): boolean {

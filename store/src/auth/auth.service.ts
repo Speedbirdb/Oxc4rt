@@ -30,7 +30,6 @@ export class AuthService {
             throw new Error('Please verify your email first');
         }
 
-        // Password comparison logic will be added with bcrypt
         return { message: 'Signin successful', email };
     }
 
@@ -43,7 +42,6 @@ export class AuthService {
             throw new Error('Invalid verification code');
         }
 
-        // Mark user as verified
         await this.userService.markAsVerified(email);
         return { message: 'Email verified successfully' };
     }
