@@ -3,7 +3,7 @@
   <div style="width: 300px; background: white; border-right: 1px solid #e1e8ed; display: flex; flex-direction: column;">
     
     <div style="padding: 20px; border-bottom: 1px solid #e1e8ed;">
-      <h2 style="margin: 0 0 15px 0; color: #1a202c; font-size: 20px;">My Scheduler</h2>
+      <h2 style="margin: 0 0 15px 0; color: #1a202c; font-size: 20px;">Scheduler</h2>
       <button class="standart-button" (click)="toggleNewPlanForm()" style="width: 100%;">
         + New Plan
       </button>
@@ -134,9 +134,32 @@
         </div>
         
         <div *ngIf="currentView === 'calendar'">
-          <div style="background: white; padding: 40px; border-radius: 12px; text-align: center; border: 2px dashed #e2e8f0;">
-            <h3 style="color: #718096; margin: 0 0 10px 0;">Calendar View</h3>
-            <p style="color: #a0aec0;">Calendar functionality coming soon</p>
+          <div style="display: grid; gap: 12px;">
+            <div *ngFor="let item of getSelectedPlanItems()" 
+                 style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; transition: all 0.2s;"
+                 [style.border-left]="'4px solid ' + item.color">
+              
+              <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                  <h4 style="margin: 0 0 8px 0; color: #2d3748;">{{item.title}}</h4>
+                  <p style="margin: 0 0 8px 0; color: #718096; font-size: 14px;">{{item.description}}</p>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <span [style.background]="getPriorityColor(item.priority, item.urgency)" 
+                          style="color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">{{item.priority}}</span>
+                    <span style="color: #718096; font-size: 12px;">Due: {{item.dueDate}}</span>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button (click)="updateItemStatus(item.id, 'done')" 
+                          [disabled]="item.status === 'done'"
+                          [style.background]="item.status === 'done' ? '#38a169' : '#e2e8f0'"
+                          [style.color]="item.status === 'done' ? 'white' : '#718096'"
+                          style="border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">✓</button>
+                  <button (click)="deleteItem(item.id)" 
+                          style="background: #fed7d7; color: #e53e3e; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">×</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         

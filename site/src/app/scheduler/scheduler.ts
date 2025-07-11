@@ -35,6 +35,25 @@ export class Scheduler {
 
   constructor() {
     this.userEmail = localStorage.getItem('signupEmail') || 'user@example.com';
+    this.loadData();
+  }
+
+  loadData() {
+    const savedPlans = localStorage.getItem('userPlans');
+    const savedItems = localStorage.getItem('userPlanItems');
+    
+    if (savedPlans) {
+      this.plans = JSON.parse(savedPlans);
+    }
+    
+    if (savedItems) {
+      this.planItems = JSON.parse(savedItems);
+    }
+  }
+
+  saveData() {
+    localStorage.setItem('userPlans', JSON.stringify(this.plans));
+    localStorage.setItem('userPlanItems', JSON.stringify(this.planItems));
   }
 
   addNewPlan() {
@@ -50,6 +69,7 @@ export class Scheduler {
       this.newPlanName = '';
       this.newPlanDescription = '';
       this.showNewPlanForm = false;
+      this.saveData();
     }
   }
 
@@ -70,6 +90,7 @@ export class Scheduler {
     if (this.selectedPlan?.id === planId) {
       this.selectedPlan = null;
     }
+    this.saveData();
   }
 
   addNewItem() {
@@ -101,6 +122,7 @@ export class Scheduler {
       this.newItemColor = '#007bff';
       this.newItemDueDate = '';
       this.showNewItemForm = false;
+      this.saveData();
     }
   }
 
@@ -108,6 +130,7 @@ export class Scheduler {
     const item = this.planItems.find(item => item.id === itemId);
     if (item) {
       item.status = status;
+      this.saveData();
     }
   }
 
@@ -122,6 +145,7 @@ export class Scheduler {
       
       // Remove item
       this.planItems = this.planItems.filter(item => item.id !== itemId);
+      this.saveData();
     }
   }
 
