@@ -49,7 +49,6 @@ export class Signup {
             this.message = response.error;
           } else {
             this.message = 'Verification email sent! Check your email.';
-            // Navigate to verification page after 2 seconds
             setTimeout(() => {
               this.router.navigate(['/verify-email', 'token']);
             }, 2000);

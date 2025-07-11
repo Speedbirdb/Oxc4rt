@@ -1,1 +1,149 @@
-<p>scheduler works!</p>
+<div style="width: 100vw; height: 100vh; background: #f5f7fa; display: flex;">
+  
+  <div style="width: 300px; background: white; border-right: 1px solid #e1e8ed; display: flex; flex-direction: column;">
+    
+    <div style="padding: 20px; border-bottom: 1px solid #e1e8ed;">
+      <h2 style="margin: 0 0 15px 0; color: #1a202c; font-size: 20px;">My Scheduler</h2>
+      <button class="standart-button" (click)="toggleNewPlanForm()" style="width: 100%;">
+        + New Plan
+      </button>
+    </div>
+    
+    <div *ngIf="showNewPlanForm" style="padding: 15px; background: #f7fafc; border-bottom: 1px solid #e1e8ed;">
+      <input class="input-field" [(ngModel)]="newPlanName" placeholder="Plan name" style="margin-bottom: 10px;">
+      <textarea class="input-field" [(ngModel)]="newPlanDescription" placeholder="Description" rows="2" style="margin-bottom: 10px;"></textarea>
+      <div style="display: flex; gap: 8px;">
+        <button class="standart-button" (click)="addNewPlan()" style="flex: 1;">Create</button>
+        <button class="standart-button" (click)="toggleNewPlanForm()" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+    
+    <div style="flex: 1; overflow-y: auto; padding: 10px;">
+      <div *ngFor="let plan of plans" 
+           (click)="selectPlan(plan)"
+           [style.background]="selectedPlan?.id === plan.id ? '#ebf8ff' : 'white'"
+           [style.border]="selectedPlan?.id === plan.id ? '2px solid #3182ce' : '1px solid #e2e8f0'"
+           style="cursor: pointer; padding: 12px; margin: 5px 0; border-radius: 8px; transition: all 0.2s;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h4 style="margin: 0 0 4px 0; color: #2d3748; font-size: 14px;">{{plan.name}}</h4>
+            <p style="margin: 0; color: #718096; font-size: 12px;">{{plan.itemCount}} tasks</p>
+          </div>
+          <div [style.background]="plan.color" style="width: 10px; height: 10px; border-radius: 50%;"></div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <div style="flex: 1; display: flex; flex-direction: column;">
+    
+    <div *ngIf="!selectedPlan" style="padding: 40px; text-align: center;">
+      <h1 style="color: #2d3748; margin-bottom: 10px;">Welcome to Your Scheduler</h1>
+      <p style="color: #718096; margin-bottom: 30px;">Select a plan from the sidebar to get started</p>
+      
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 600px; margin: 0 auto;">
+        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <h3 style="color: #3182ce; margin: 0 0 8px 0;">{{plans.length}}</h3>
+          <p style="color: #718096; margin: 0; font-size: 14px;">Total Plans</p>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <h3 style="color: #38a169; margin: 0 0 8px 0;">{{planItems.length}}</h3>
+          <p style="color: #718096; margin: 0; font-size: 14px;">Total Tasks</p>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <h3 style="color: #e53e3e; margin: 0 0 8px 0;">{{getCompletedCount()}}</h3>
+          <p style="color: #718096; margin: 0; font-size: 14px;">Completed</p>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="selectedPlan" style="display: flex; flex-direction: column; height: 100%;">
+      
+      <div style="padding: 20px; background: white; border-bottom: 1px solid #e1e8ed;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 15px;">
+            <button class="standart-button" (click)="goBackToOverview()">← Back</button>
+            <div>
+              <h2 style="margin: 0; color: #2d3748;">{{selectedPlan.name}}</h2>
+              <p style="margin: 0; color: #718096; font-size: 14px;">{{selectedPlan.description}}</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="standart-button" 
+                    [style.background]="currentView === 'list' ? '#3182ce' : ''"
+                    [style.color]="currentView === 'list' ? 'white' : ''"
+                    (click)="switchView('list')">List</button>
+            <button class="standart-button" 
+                    [style.background]="currentView === 'calendar' ? '#3182ce' : ''"
+                    [style.color]="currentView === 'calendar' ? 'white' : ''"
+                    (click)="switchView('calendar')">Calendar</button>
+            <button class="standart-button" (click)="toggleNewItemForm()">+ Add Task</button>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="showNewItemForm" style="padding: 20px; background: #f7fafc; border-bottom: 1px solid #e1e8ed;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+          <input class="input-field" [(ngModel)]="newItemTitle" placeholder="Task title">
+          <input type="date" class="input-field" [(ngModel)]="newItemDueDate">
+          <select class="input-field" [(ngModel)]="newItemPriority">
+            <option value="low">Low Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="high">High Priority</option>
+          </select>
+        </div>
+        <textarea class="input-field" [(ngModel)]="newItemDescription" placeholder="Description" rows="2" style="margin: 10px 0;"></textarea>
+        <div style="display: flex; gap: 10px;">
+          <button class="standart-button" (click)="addNewItem()" style="flex: 1;">Add Task</button>
+          <button class="standart-button" (click)="toggleNewItemForm()" style="flex: 1;">Cancel</button>
+        </div>
+      </div>
+      
+      <div style="flex: 1; overflow-y: auto; padding: 20px;">
+        
+        <div *ngIf="currentView === 'list'">
+          <div style="display: grid; gap: 12px;">
+            <div *ngFor="let item of getSelectedPlanItems()" 
+                 style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; transition: all 0.2s;"
+                 [style.border-left]="'4px solid ' + item.color">
+              
+              <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                  <h4 style="margin: 0 0 8px 0; color: #2d3748;">{{item.title}}</h4>
+                  <p style="margin: 0 0 8px 0; color: #718096; font-size: 14px;">{{item.description}}</p>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <span [style.background]="getPriorityColor(item.priority, item.urgency)" 
+                          style="color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">{{item.priority}}</span>
+                    <span style="color: #718096; font-size: 12px;">Due: {{item.dueDate}}</span>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button (click)="updateItemStatus(item.id, 'done')" 
+                          [disabled]="item.status === 'done'"
+                          [style.background]="item.status === 'done' ? '#38a169' : '#e2e8f0'"
+                          [style.color]="item.status === 'done' ? 'white' : '#718096'"
+                          style="border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">✓</button>
+                  <button (click)="deleteItem(item.id)" 
+                          style="background: #fed7d7; color: #e53e3e; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="currentView === 'calendar'">
+          <div style="background: white; padding: 40px; border-radius: 12px; text-align: center; border: 2px dashed #e2e8f0;">
+            <h3 style="color: #718096; margin: 0 0 10px 0;">Calendar View</h3>
+            <p style="color: #a0aec0;">Calendar functionality coming soon</p>
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>
+    
+  </div>
+  
+</div>
