@@ -23,19 +23,25 @@ export class Signin {
     this.isValidEmail();
   }
 
+  message: string = '';
+
   onSubmit(): void {
     if (this.isFormValid()) {
       this.isLoading = true;
+      this.message = '';
       
       this.authService.signIn(this.email, this.password).subscribe({
         next: (response) => {
           this.isLoading = false;
-          if (!response.error) {
+          if (response.error) {
+            this.message = response.error;
+          } else {
             this.router.navigate(['/scheduler']);
           }
         },
         error: (error) => {
           this.isLoading = false;
+          this.message = error.error?.message || 'Login failed';
         }
       });
     }

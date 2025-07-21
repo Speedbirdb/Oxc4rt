@@ -108,13 +108,11 @@ export class Scheduler {
       };
       this.planItems.push(newItem);
       
-      // Update plan item count
       const plan = this.plans.find(p => p.id === this.selectedPlan.id);
       if (plan) {
         plan.itemCount++;
       }
       
-      // Reset form
       this.newItemTitle = '';
       this.newItemDescription = '';
       this.newItemPriority = 'medium';
@@ -137,13 +135,11 @@ export class Scheduler {
   deleteItem(itemId: number) {
     const item = this.planItems.find(item => item.id === itemId);
     if (item) {
-      // Update plan item count
       const plan = this.plans.find(p => p.id === item.planId);
       if (plan && plan.itemCount > 0) {
         plan.itemCount--;
       }
       
-      // Remove item
       this.planItems = this.planItems.filter(item => item.id !== itemId);
       this.saveData();
     }

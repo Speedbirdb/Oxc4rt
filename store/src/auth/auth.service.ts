@@ -30,7 +30,12 @@ export class AuthService {
             throw new Error('Please verify your email first');
         }
 
-        return { message: 'Signin successful', email };
+        // Simple password check (should use bcrypt in production)
+        if (user.password !== password) {
+            throw new Error('Invalid password');
+        }
+
+        return { message: 'Signin successful', email, userId: user._id };
     }
 
     async verifyCode(email: string, code: string) {
